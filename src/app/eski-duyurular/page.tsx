@@ -1,11 +1,12 @@
 "use client";
-
 import { useState } from "react";
+import { AiOutlinePlus } from "react-icons/ai";
 
 // Mock Data
 const initialVideos = [
   { id: 1, url: "https://cdn.pixabay.com/video/2017/09/20/12127-235051444_large.mp4" },
   { id: 2, url: "https://samplelib.com/lib/preview/mp4/sample-10s.mp4" },
+  { id: 3, url: "https://samplelib.com/lib/preview/mp4/sample-9s.mp4" },
 ];
 
 const initialImages = [
@@ -34,17 +35,19 @@ const EskiDuyurular = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-bl from-blue-300 to-orange-200 p-6">
+    <div className="select-none flex items-center justify-center min-h-screen bg-gradient-to-bl from-blue-300 to-orange-200 p-6">
       <div className="w-full max-w-6xl">
         <h1 className="text-4xl font-bold text-white text-center mb-8">Duyurular</h1>
 
         <div className="flex justify-end mb-8">
-          <button
-            className="bg-emerald-600 text-white px-6 py-2 rounded-lg hover:bg-emerald-700 transition duration-300"
-            onClick={() => alert("Yeni Duyuru butonuna tıklandı!")}
-          >
-            Yeni Duyuru
-          </button>
+        <button
+  className="bg-emerald-600 text-white px-6 py-2 rounded-lg hover:bg-emerald-700 transition duration-300 flex items-center gap-2"
+>
+  <span className="bg-white text-emerald-600 p-1  rounded-full  flex items-center justify-center">
+  <AiOutlinePlus size={16} className="font-bold" />
+  </span>
+  Yeni Duyuru
+</button>
         </div>
 
         <div className="bg-gray-900 rounded-lg shadow-lg p-6 mb-8 min-h-[300px]">
@@ -65,32 +68,35 @@ const EskiDuyurular = () => {
                 <thead>
                   <tr className="text-left text-gray-400">
                     <th className="p-2 w-1/6">ID</th>
-                    <th className="p-2 w-3/6">URL</th>
+                    <th className="p-2 w-3/6 text-center">URL</th>
                     <th className="p-2 w-1/6 text-center">İşlem</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {videos.map((video) => (
-                    <tr
-                      key={video.id}
-                      className="hover:bg-gray-800 cursor-pointer"
-                      onClick={() => setSelectedVideo(video.url)}
-                    >
-                      <td className="p-2 text-white">{video.id}</td>
-                      <td className="p-2 text-blue-400 underline break-all">{video.url}</td>
-                      <td className="p-2 text-center">
-                        <button
-                          className="bg-red-500 text-white px-6 py-1 rounded-md hover:bg-red-600 transition duration-300"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleDeleteVideo(video.id);
-                          }}
-                        >
-                          Sil
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
+                {videos.map((video) => {
+                    const isSelected = selectedVideo === video.url ? "border-2 border-blue-500" : "";
+                    return (
+                      <tr
+                        key={video.id}
+                        className={`hover:bg-gray-800 cursor-pointer ${isSelected}`}
+                        onClick={() => setSelectedVideo(video.url)}
+                      >
+                        <td className="p-2 text-white">{video.id}</td>
+                        <td className="p-2 text-blue-400 underline break-all">{video.url}</td>
+                        <td className="p-2 text-center">
+                          <button
+                            className="bg-red-500 text-white px-6 py-1 rounded-md hover:bg-red-700 transition duration-300"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleDeleteVideo(video.id);
+                            }}
+                          >
+                            Sil
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
@@ -112,31 +118,33 @@ const EskiDuyurular = () => {
                 <thead>
                   <tr className="text-left text-gray-400">
                     <th className="p-2 w-1/6">ID</th>
-                    <th className="p-2 w-4/6">URL</th>
-                    <th className="p-2 w-1/6">İşlem</th>
+                    <th className="p-2 w-4/6 text-center">URL</th>
+                    <th className="p-2 w-1/6 text-center">İşlem</th>
                   </tr>
                 </thead>
                 <tbody>
                   {images.map((image) => (
-                    <tr
-                      key={image.id}
-                      className="hover:bg-gray-800 cursor-pointer"
-                      onClick={() => setSelectedImage(image.url)}
-                    >
-                      <td className="p-2 text-white">{image.id}</td>
-                      <td className="p-2 text-blue-400 underline break-all">{image.url}</td>
-                      <td className="p-2">
-                        <button
-                          className="bg-red-500 text-white px-6 py-1 rounded-md hover:bg-red-600 transition duration-300"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleDeleteImage(image.id);
-                          }}
-                        >
-                          Sil
-                        </button>
-                      </td>
-                    </tr>
+                     <tr
+                     key={image.id}
+                     className={`hover:bg-gray-800 cursor-pointer ${
+                       selectedImage === image.url ? "border-2 border-blue-500" : ""
+                     }`}
+                     onClick={() => setSelectedImage(image.url)}
+                   >
+                     <td className="p-2 text-white">{image.id}</td>
+                     <td className="p-2 text-blue-400 underline break-all">{image.url}</td>
+                     <td className="p-2">
+                       <button
+                         className="bg-red-500 text-white px-6 py-1  rounded-md hover:bg-red-700 transition duration-100"
+                         onClick={(e) => {
+                           e.stopPropagation();
+                           handleDeleteImage(image.id);
+                         }}
+                       >
+                         Sil
+                       </button>
+                     </td>
+                   </tr>
                   ))}
                 </tbody>
               </table>
