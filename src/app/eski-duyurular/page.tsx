@@ -1,4 +1,5 @@
 "use client";
+import { useRouter } from "next/navigation"; // Doğru import
 import { useState } from "react";
 import { AiOutlinePlus } from "react-icons/ai";
 
@@ -15,6 +16,7 @@ const initialImages = [
 ];
 
 const EskiDuyurular = () => {
+  const router = useRouter();
   const [videos, setVideos] = useState(initialVideos);
   const [images, setImages] = useState(initialImages);
   const [selectedVideo, setSelectedVideo] = useState<string | null>(null);
@@ -35,14 +37,15 @@ const EskiDuyurular = () => {
   };
 
   return (
-    <div className="select-none flex items-center justify-center min-h-screen bg-gradient-to-tl from-blue-200 from-40%  to-slate-400 p-8">
+    <div className="select-none flex items-center justify-center min-h-screen bg-gradient-to-tl from-blue-200 from-50%  to-slate-400 p-8">
       <div className="w-full max-w-6xl">
         <h1 className="text-4xl font-bold text-white text-center mb-8 drop-shadow-sm">Duyurular</h1>
 
         <div className="flex justify-end mb-8">
         <button
-  className="bg-emerald-600 text-white px-6 py-2 rounded-lg hover:bg-emerald-700 transition duration-300 flex items-center gap-2"
->
+      className="bg-emerald-600 text-white px-6 py-2 rounded-lg hover:bg-emerald-700 transition duration-300 flex items-center gap-2"
+      onClick={() => router.push("/yeni-duyurular")} // Corrected function
+    >
   <span className="bg-white text-emerald-600 p-1  rounded-full  flex items-center justify-center">
   <AiOutlinePlus size={16} className="font-bold" />
   </span>
