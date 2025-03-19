@@ -32,7 +32,7 @@ const Login = () => {
   };
 
   return (
-    <div className="select-none flex items-center justify-center h-screen bg-gradient-to-bl from-blue-300 to-orange-200">
+    <div className="select-none flex items-center justify-center h-screen bg-gradient-to-bl from-blue-200 from-10% via-slate-400 to-slate-300 ">
       <div className="w-[100%] max-w-2xl lg:max-w-2xl p-12 bg-gray-900 flex-col flex items-center gap-5 rounded-lg shadow-lg">
         {/* Logo */}
         <img src="\akdeniz.png" alt="logo" className="w-30 md:w-30" />

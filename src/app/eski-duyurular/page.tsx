@@ -6,7 +6,7 @@ import { AiOutlinePlus } from "react-icons/ai";
 const initialVideos = [
   { id: 1, url: "https://cdn.pixabay.com/video/2017/09/20/12127-235051444_large.mp4" },
   { id: 2, url: "https://samplelib.com/lib/preview/mp4/sample-10s.mp4" },
-  { id: 3, url: "https://samplelib.com/lib/preview/mp4/sample-9s.mp4" },
+  { id: 3, url: "https://videos.pexels.com/video-files/854417/854417-uhd_2560_1440_25fps.mp4" },
 ];
 
 const initialImages = [
@@ -35,9 +35,9 @@ const EskiDuyurular = () => {
   };
 
   return (
-    <div className="select-none flex items-center justify-center min-h-screen bg-gradient-to-bl from-blue-300 to-orange-200 p-6">
+    <div className="select-none flex items-center justify-center min-h-screen bg-gradient-to-tl from-blue-200 from-40%  to-slate-400 p-8">
       <div className="w-full max-w-6xl">
-        <h1 className="text-4xl font-bold text-white text-center mb-8">Duyurular</h1>
+        <h1 className="text-4xl font-bold text-white text-center mb-8 drop-shadow-sm">Duyurular</h1>
 
         <div className="flex justify-end mb-8">
         <button
