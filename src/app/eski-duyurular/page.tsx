@@ -44,7 +44,7 @@ const EskiDuyurular = () => {
         <div className="flex justify-end mb-8">
         <button
       className="bg-emerald-600 text-white px-6 py-2 rounded-lg hover:bg-emerald-700 transition duration-300 flex items-center gap-2"
-      onClick={() => router.push("/yeni-duyurular")} // Corrected function
+      onClick={() => router.push("/yeni-duyurular")} 
     >
   <span className="bg-white text-emerald-600 p-1  rounded-full  flex items-center justify-center">
   <AiOutlinePlus size={16} className="font-bold" />

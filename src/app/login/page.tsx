@@ -24,7 +24,6 @@ const Login = () => {
 
     // Giriş kontrolü
     if (username === mockUser.id && password === mockUser.password) {
-      alert("Giriş başarılı! Yönlendiriliyorsunuz...");
       router.push("/eski-duyurular"); // Eski Duyurular sayfasına yönlendir
     } else {
       alert("Hatalı ID veya şifre! Lütfen tekrar deneyin.");
