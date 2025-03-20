@@ -32,7 +32,7 @@ const Login = () => {
 
   return (
     <div className="select-none flex items-center justify-center h-screen bg-gradient-to-bl from-blue-200 from-10% via-slate-400 to-slate-300 ">
-      <div className="w-[100%] max-w-2xl lg:max-w-2xl p-12 bg-gray-900 flex-col flex items-center gap-5 rounded-lg shadow-lg">
+      <div className="w-[100%] max-w-2xl lg:max-w-2xl p-12 bg-gray-900 flex-col flex items-center gap-5 rounded-md  shadow-lg">
         {/* Logo */}
         <img src="\akdeniz.png" alt="logo" className="w-30 md:w-30" />
 
@@ -43,8 +43,8 @@ const Login = () => {
         <form className="w-full flex flex-col gap-5" onSubmit={handleLogin}>
           {/* ID Input */}
           <div className="w-full">
-            <label className="block text-sm md:text-base text-gray-300 mb-2">ID</label>
-            <div className="w-full flex items-center gap-2 bg-gray-800 p-3 rounded-xl focus-within:bg-gray-750 transition duration-300">
+            <label className="block text-sm md:text-base text-gray-300 mb-2">Username</label>
+            <div className="w-full flex items-center gap-2 bg-gray-800 p-3 rounded-lg focus-within:bg-gray-750 transition duration-300">
               <MdAlternateEmail className="text-gray-500" />
               <input
                 type="text"
@@ -60,7 +60,7 @@ const Login = () => {
           {/* Password Input */}
           <div className="w-full">
             <label className="block text-sm md:text-base text-gray-300 mb-2">Password</label>
-            <div className="w-full flex items-center gap-2 bg-gray-800 p-3 rounded-xl focus-within:bg-gray-750 transition duration-300 relative">
+            <div className="w-full flex items-center gap-2 bg-gray-800 p-3 rounded-lg focus-within:bg-gray-750 transition duration-300 relative">
               <FaFingerprint className="text-gray-500" />
               <input
                 type={showPassword ? "text" : "password"}
