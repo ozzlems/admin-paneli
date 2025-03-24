@@ -2,6 +2,7 @@
 import { useRouter } from "next/navigation"; 
 import { useState } from "react";
 import { AiOutlinePlus } from "react-icons/ai";
+import ProfileMenu from "../profile/page";
 
 // Mock Data
 const initialVideos = [
@@ -39,20 +40,23 @@ const EskiDuyurular = () => {
   return (
     <div className="select-none flex items-center justify-center min-h-screen bg-gradient-to-tl from-blue-200 from-50%  to-slate-400 p-8">
       <div className="w-full max-w-6xl">
-        <h1 className="text-4xl font-bold text-white text-center mb-8 drop-shadow-sm">Duyurular</h1>
-
-        <div className="flex justify-end mb-8">
-        <button
-      className="bg-emerald-600 text-white px-6 py-2 rounded-lg hover:bg-emerald-700 transition duration-300 flex items-center gap-2"
-      onClick={() => router.push("/yeni-duyurular")} 
-    >
-  <span className="bg-white text-emerald-600 p-1  rounded-full  flex items-center justify-center">
-  <AiOutlinePlus size={16} className="font-bold" />
-  </span>
-  Yeni Duyuru
-</button>
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="text-4xl font-bold text-white drop-shadow-sm">Duyurular</h1>
+          <div className="flex items-center gap-4">
+            <button
+              className="bg-emerald-600 text-white px-6 py-2 rounded-lg hover:bg-emerald-700 transition duration-300 flex items-center gap-2"
+              onClick={() => router.push("/yeni-duyurular")}
+            >
+              <span className="bg-white text-emerald-600 p-1 rounded-full flex items-center justify-center">
+                <AiOutlinePlus size={16} className="font-bold" />
+              </span>
+              Yeni Duyuru
+            </button>
+            <ProfileMenu /> {/* Profil menüsünü buraya ekleyin */}
+          </div>
         </div>
 
+        {/* Videolar ve Resimler bölümü aynı kalacak */}
         <div className="bg-gray-900 rounded-lg shadow-lg p-6 mb-8 min-h-[300px]">
           <h2 className="text-2xl font-bold text-white mb-4">Videolar</h2>
           <div className="flex gap-8">
@@ -76,7 +80,7 @@ const EskiDuyurular = () => {
                   </tr>
                 </thead>
                 <tbody>
-                {videos.map((video) => {
+                  {videos.map((video) => {
                     const isSelected = selectedVideo === video.url ? "border-2 border-blue-500" : "";
                     return (
                       <tr
@@ -127,27 +131,27 @@ const EskiDuyurular = () => {
                 </thead>
                 <tbody>
                   {images.map((image) => (
-                     <tr
-                     key={image.id}
-                     className={`hover:bg-gray-800 cursor-pointer ${
-                       selectedImage === image.url ? "border-2 border-blue-500" : ""
-                     }`}
-                     onClick={() => setSelectedImage(image.url)}
-                   >
-                     <td className="p-2 text-white">{image.id}</td>
-                     <td className="p-2 text-blue-400 underline break-all">{image.url}</td>
-                     <td className="p-2">
-                       <button
-                         className="bg-red-500 text-white px-6 py-1  rounded-md hover:bg-red-700 transition duration-100"
-                         onClick={(e) => {
-                           e.stopPropagation();
-                           handleDeleteImage(image.id);
-                         }}
-                       >
-                         Sil
-                       </button>
-                     </td>
-                   </tr>
+                    <tr
+                      key={image.id}
+                      className={`hover:bg-gray-800 cursor-pointer ${
+                        selectedImage === image.url ? "border-2 border-blue-500" : ""
+                      }`}
+                      onClick={() => setSelectedImage(image.url)}
+                    >
+                      <td className="p-2 text-white">{image.id}</td>
+                      <td className="p-2 text-blue-400 underline break-all">{image.url}</td>
+                      <td className="p-2">
+                        <button
+                          className="bg-red-500 text-white px-6 py-1 rounded-md hover:bg-red-700 transition duration-100"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDeleteImage(image.id);
+                          }}
+                        >
+                          Sil
+                        </button>
+                      </td>
+                    </tr>
                   ))}
                 </tbody>
               </table>
