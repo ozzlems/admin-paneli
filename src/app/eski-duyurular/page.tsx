@@ -138,7 +138,7 @@ const EskiDuyurular = () => {
 <div className="bg-gray-800 rounded-lg shadow-lg p-6 min-h-[300px]">
   <h2 className="text-2xl font-bold mb-4">Resimler</h2>
   <div className="flex gap-8">
-    <div className="flex-1 flex items-center justify-center border border-gray-600 rounded-lg h-[240px] w-full overflow-hidden">
+    <div className="flex-1 flex items-center justify-center border border-gray-600 rounded-lg h-[280px] w-full overflow-hidden">
       {selectedImage ? (
         <img
           src={selectedImage}
