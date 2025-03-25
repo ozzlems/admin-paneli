@@ -1,10 +1,10 @@
 "use client";
-import { useRouter } from "next/navigation"; 
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { AiOutlinePlus } from "react-icons/ai";
-import ProfileMenu from "../profile/page";
+import { FaBell, FaSignOutAlt, FaUser } from "react-icons/fa";
 
-// Mock Data
+
 const initialVideos = [
   { id: 1, url: "https://cdn.pixabay.com/video/2017/09/20/12127-235051444_large.mp4" },
   { id: 2, url: "https://samplelib.com/lib/preview/mp4/sample-10s.mp4" },
@@ -25,49 +25,76 @@ const EskiDuyurular = () => {
 
   const handleDeleteVideo = (id: number) => {
     setVideos(videos.filter((video) => video.id !== id));
-    if (selectedVideo && videos.find((video) => video.id === id)?.url === selectedVideo) {
-      setSelectedVideo(null);
-    }
+    setSelectedVideo(null);
   };
 
   const handleDeleteImage = (id: number) => {
     setImages(images.filter((image) => image.id !== id));
-    if (selectedImage && images.find((image) => image.id === id)?.url === selectedImage) {
-      setSelectedImage(null);
-    }
+    setSelectedImage(null);
   };
 
   return (
-    <div className="select-none flex items-center justify-center min-h-screen bg-gradient-to-tl from-blue-200 from-50%  to-slate-400 p-8">
-      <div className="w-full max-w-6xl">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-4xl font-bold text-white drop-shadow-sm">Duyurular</h1>
-          <div className="flex items-center gap-4">
+
+    <div className="flex min-h-screen bg-slate-200">
+    {/* Sidebar */}
+    <div className="w-64 bg-gray-900 text-white p-6 flex flex-col gap-6">
+      <div className="flex items-left gap-2 mb-4 mt-2 mr-2 justify-center">
+        {/* Akdeniz İkonu */}
+        <img src="/akdeniz.png" alt="Akdeniz Icon" className="w-10 h-10" />
+        <h2 className="text-2xl font-bold text-left text-gray-100 mt-1.5">
+          Admin Panel
+        </h2>
+      </div>
+      <ul>
+        <li
+          className="mb-4 p-2.5 rounded-sm bg-gray-700 cursor-pointer hover:bg-gray-600 flex items-center gap-2"
+          onClick={() => router.push("/eski-duyurular")}
+        >
+          <FaBell /> Duyurular
+        </li>
+        <li
+          className="mb-4 p-2.5 rounded-sm bg-gray-700 cursor-pointer hover:bg-gray-600 flex items-center gap-2"
+          onClick={() => router.push("/profil")}
+        >
+          <FaUser /> Profil
+        </li>
+      </ul>
+      <button
+        className="flex items-center gap-2 bg-red-600 p-2.5 rounded-lg hover:bg-red-700"
+        onClick={() => router.push("/login")}
+      >
+        <FaSignOutAlt /> Çıkış Yap
+      </button>
+    </div>
+
+
+      {/* Main Content */}
+      <div className="flex-1 p-8">
+        <div className="flex justify-between items-center mb-10">
+          <h1 className="text-3xl font-bold ml-4 text-slate-800">Duyurular</h1>
+          <div className="flex items-center mt-2 gap-4">
             <button
-              className="bg-emerald-600 text-white px-6 py-2 rounded-lg hover:bg-emerald-700 transition duration-300 flex items-center gap-2"
+              className="bg-emerald-600 px-6 py-2 rounded-lg hover:bg-emerald-700 transition duration-300 flex items-center gap-2"
               onClick={() => router.push("/yeni-duyurular")}
             >
-              <span className="bg-white text-emerald-600 p-1 rounded-full flex items-center justify-center">
-                <AiOutlinePlus size={16} className="font-bold" />
-              </span>
-              Yeni Duyuru
+              <AiOutlinePlus size={16} /> Yeni Duyuru
             </button>
-            <ProfileMenu /> {/* Profil menüsünü buraya ekleyin */}
+          
           </div>
         </div>
 
-        {/* Videolar ve Resimler bölümü aynı kalacak */}
-        <div className="bg-gray-900 rounded-lg shadow-lg p-6 mb-8 min-h-[300px]">
-          <h2 className="text-2xl font-bold text-white mb-4">Videolar</h2>
+        {/* Video Section */}
+        <div className="bg-gray-800  rounded-lg shadow-lg p-6 mb-8 min-h-[250px]">
+          <h2 className="text-2xl font-bold mb-4">Videolar</h2>
           <div className="flex gap-8">
-            <div className="flex-1 flex items-center justify-center border border-gray-600 rounded-lg min-h-[200px]">
+            <div className="flex-1 flex items-center justify-center border border-gray-600 rounded-lg min-h-[240px]">
               {selectedVideo ? (
-                <video key={selectedVideo} controls className="w-full rounded-lg shadow-lg">
+                <video key={selectedVideo} controls className="w-full h-full object-contain rounded-lg shadow-lg">
                   <source src={selectedVideo} type="video/mp4" />
                   Tarayıcınız video oynatmayı desteklemiyor.
                 </video>
               ) : (
-                <p className="text-gray-400">Video ön izleme burada gözükecek</p>
+                <p className="text-gray-400">Video önizleme burada görünecek</p>
               )}
             </div>
             <div className="flex-1">
@@ -80,72 +107,20 @@ const EskiDuyurular = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {videos.map((video) => {
-                    const isSelected = selectedVideo === video.url ? "border-2 border-blue-500" : "";
-                    return (
-                      <tr
-                        key={video.id}
-                        className={`hover:bg-gray-800 cursor-pointer ${isSelected}`}
-                        onClick={() => setSelectedVideo(video.url)}
-                      >
-                        <td className="p-2 text-white">{video.id}</td>
-                        <td className="p-2 text-blue-400 underline break-all">{video.url}</td>
-                        <td className="p-2 text-center">
-                          <button
-                            className="bg-red-500 text-white px-6 py-1 rounded-md hover:bg-red-700 transition duration-300"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleDeleteVideo(video.id);
-                            }}
-                          >
-                            Sil
-                          </button>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-gray-900 rounded-lg shadow-lg p-6 min-h-[300px]">
-          <h2 className="text-2xl font-bold text-white mb-4">Resimler</h2>
-          <div className="flex gap-8">
-            <div className="flex-1 flex items-center justify-center border border-gray-600 rounded-lg min-h-[200px]">
-              {selectedImage ? (
-                <img src={selectedImage} alt="Selected" className="w-full h-full object-cover" />
-              ) : (
-                <p className="text-gray-400">Resim ön izleme burada gözükecek</p>
-              )}
-            </div>
-            <div className="flex-1">
-              <table className="w-full table-fixed min-h-[150px]">
-                <thead>
-                  <tr className="text-left text-gray-400">
-                    <th className="p-2 w-1/6">ID</th>
-                    <th className="p-2 w-4/6 text-center">URL</th>
-                    <th className="p-2 w-1/6 text-center">İşlem</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {images.map((image) => (
+                  {videos.map((video) => (
                     <tr
-                      key={image.id}
-                      className={`hover:bg-gray-800 cursor-pointer ${
-                        selectedImage === image.url ? "border-2 border-blue-500" : ""
-                      }`}
-                      onClick={() => setSelectedImage(image.url)}
+                      key={video.id}
+                      className={`cursor-pointer hover:bg-gray-700 ${selectedVideo === video.url ? "border-2 border-blue-500" : ""}`}
+                      onClick={() => setSelectedVideo(video.url)}
                     >
-                      <td className="p-2 text-white">{image.id}</td>
-                      <td className="p-2 text-blue-400 underline break-all">{image.url}</td>
-                      <td className="p-2">
+                      <td className="p-2">{video.id}</td>
+                      <td className="p-2 text-blue-400 underline break-all">{video.url}</td>
+                      <td className="p-2 text-center">
                         <button
-                          className="bg-red-500 text-white px-6 py-1 rounded-md hover:bg-red-700 transition duration-100"
+                          className="bg-red-500 text-white px-6 py-1 rounded-md hover:bg-red-700 transition duration-300"
                           onClick={(e) => {
                             e.stopPropagation();
-                            handleDeleteImage(image.id);
+                            handleDeleteVideo(video.id);
                           }}
                         >
                           Sil
@@ -158,6 +133,62 @@ const EskiDuyurular = () => {
             </div>
           </div>
         </div>
+
+     {/* Image Section */}
+<div className="bg-gray-800 rounded-lg shadow-lg p-6 min-h-[300px]">
+  <h2 className="text-2xl font-bold mb-4">Resimler</h2>
+  <div className="flex gap-8">
+    <div className="flex-1 flex items-center justify-center border border-gray-600 rounded-lg h-[240px] w-full overflow-hidden">
+      {selectedImage ? (
+        <img
+          src={selectedImage}
+          alt="Selected"
+          className="h-full w-full  object-cover rounded-lg shadow-lg"
+        />
+      ) : (
+        <p className="text-gray-400">Resim önizleme burada görünecek</p>
+      )}
+    </div>
+    <div className="flex-1">
+      <table className="w-full table-fixed min-h-[120px]">
+        <thead>
+          <tr className="text-left text-gray-400">
+            <th className="p-2 w-1/6">ID</th>
+            <th className="p-2 w-3/6 text-center">URL</th>
+            <th className="p-2 w-1/6 text-center">İşlem</th>
+          </tr>
+        </thead>
+        <tbody>
+          {images.map((image) => (
+            <tr
+              key={image.id}
+              className={`cursor-pointer hover:bg-gray-700 ${
+                selectedImage === image.url ? "border-2 border-blue-500" : ""
+              }`}
+              onClick={() => setSelectedImage(image.url)}
+            >
+              <td className="p-2">{image.id}</td>
+              <td className="p-2 text-blue-400 underline break-all">
+                {image.url}
+              </td>
+              <td className="p-2 text-center">
+                <button
+                  className="bg-red-500 text-white px-6 py-1 rounded-md hover:bg-red-700 transition duration-300"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDeleteImage(image.id);
+                  }}
+                >
+                  Sil
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
       </div>
     </div>
   );

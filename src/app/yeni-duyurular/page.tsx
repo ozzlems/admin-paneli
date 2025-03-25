@@ -1,6 +1,7 @@
 'use client';
+import router from "next/router";
 import { useState, useEffect } from "react";
-import { FaImage, FaVideo, FaTrash, FaCheckCircle } from "react-icons/fa";
+import { FaImage, FaVideo, FaTrash, FaCheckCircle, FaBell, FaUser, FaSignOutAlt } from "react-icons/fa";
 
 export default function MediaUpload() {
   const [media, setMedia] = useState<{ image: string | ArrayBuffer | null; video: string | ArrayBuffer | null }>({ image: null, video: null });
@@ -85,90 +86,122 @@ export default function MediaUpload() {
   };
 
   return (
-    <div className="select-none flex items-center justify-center min-h-screen bg-gradient-to-bl from-blue-300 to-orange-200 p-6">
-      <div className="w-full max-w-8xl flex gap-10 px-16">
-        <div className="w-1/2 min-h-[300px] h-[500px] bg-gray-900 rounded-md shadow-md p-8 flex flex-col overflow-auto">
-          <h1 className="text-3xl font-bold text-white mb-6 text-center">Yeni Duyuru Oluştur</h1>
-  
-          {/* Error Message */}
-          {error && (
-            <p className="flex w-full text-red-400 text-center mb-6">
-              {error}
-            </p>
-          )}
-  
-          <div className="flex flex-col justify-center items-center flex-1 gap-6 w-full h-full border-2 border-dashed border-gray-500 rounded-md p-6">
-            {["image", "video"].map((type) => (
-              <div key={type} className="w-full mb-4">
-                <label className="block text-lg font-semibold text-gray-200 mb-2 text-left">
-                  {type === "image" ? "Resim Yükle" : "Video Yükle"}
-                </label>
-                <input
-                  type="file"
-                  accept={type === "image" ? "image/*" : "video/*"}
-                  onChange={(e) => handleUpload(e, type)}
-                  className="hidden"
-                  id={`${type}-upload`}
-                />
-                <label
-                  htmlFor={`${type}-upload`}
-                  className="w-full bg-blue-500 text-white px-6 py-3 rounded-md cursor-pointer hover:bg-blue-600 transition-all flex items-center justify-center gap-3"
-                >
-                  {type === "image" ? <FaImage size={20} /> : <FaVideo size={20} />}
-                  {type === "image" ? "Resim Seç" : "Video Seç"}
-                </label>
-              </div>
-            ))}
-          </div>
+    <div className="flex min-h-screen">
+      {/* Sidebar */}
+      <div className="w-64 bg-gray-900 text-white p-6 flex flex-col gap-6">
+        <div className="flex items-left gap-2 mb-4 mt-2 mr-2 justify-center">
+          {/* Akdeniz İkonu */}
+          <img src="/akdeniz.png" alt="Akdeniz Icon" className="w-10 h-10" />
+          <h2 className="text-2xl font-bold text-left text-gray-100 mt-1.5">
+            Admin Panel
+          </h2>
         </div>
-  
-        <div className="w-full md:w-1/2 min-h-[300px] md:min-h-[500px] bg-gray-900 rounded-md shadow-md p-4 md:p-6 overflow-auto">
-          <h2 className="text-2xl font-bold text-white mb-4 md:mb-6 text-center">Ön İzleme</h2>
-          {!media.image && !media.video ? (
-            <div className="flex items-center justify-center h-[200px] md:h-[400px] border-2 border-dashed border-gray-500 rounded-md">
-              <p className="text-gray-400 text-lg">Ön izleme burada gözükecek</p>
+        <ul>
+          <li
+            className="mb-4 p-2.5 rounded-sm bg-gray-700 cursor-pointer hover:bg-gray-600 flex items-center gap-2"
+            onClick={() => router.push("/eski-duyurular")}
+          >
+            <FaBell /> Duyurular
+          </li>
+          <li
+            className="mb-4 p-2.5 rounded-sm bg-gray-700 cursor-pointer hover:bg-gray-600 flex items-center gap-2"
+            onClick={() => router.push("/profil")}
+          >
+            <FaUser /> Profil
+          </li>
+        </ul>
+        <button
+          className="flex items-center gap-2 bg-red-600 p-2.5 rounded-lg hover:bg-red-700"
+          onClick={() => router.push("/login")}
+        >
+          <FaSignOutAlt /> Çıkış Yap
+        </button>
+      </div>
+
+      {/* Main Content */}
+      <div className="flex-1 bg-slate-200  p-6">
+        <div className="w-full max-w-8xl flex  px-10 mx-auto mt-30">
+          <div className="w-1/2 min-h-[300px] h-[500px] bg-gray-900 rounded-l-md shadow-md p-8 flex flex-col overflow-auto">
+            <h1 className="text-3xl font-bold text-white mb-6 text-center">Yeni Duyuru Oluştur</h1>
+            {/* Error Message */}
+            {error && (
+              <p className="flex w-full text-red-400 text-center mb-6">
+                {error}
+              </p>
+            )}
+            <div className="flex flex-col justify-center items-center flex-1 gap-6 w-full h-full border-2 border-dashed border-gray-500 rounded-md p-6">
+              {["image", "video"].map((type) => (
+                <div key={type} className="w-full mb-4">
+                  <label className="block text-lg font-semibold text-gray-200 mb-2 text-left">
+                    {type === "image" ? "Resim Yükle" : "Video Yükle"}
+                  </label>
+                  <input
+                    type="file"
+                    accept={type === "image" ? "image/*" : "video/*"}
+                    onChange={(e) => handleUpload(e, type)}
+                    className="hidden"
+                    id={`${type}-upload`}
+                  />
+                  <label
+                    htmlFor={`${type}-upload`}
+                    className="w-full bg-blue-500 text-white px-6 py-3 rounded-md cursor-pointer hover:bg-blue-600 transition-all flex items-center justify-center gap-3"
+                  >
+                    {type === "image" ? <FaImage size={20} /> : <FaVideo size={20} />}
+                    {type === "image" ? "Resim Seç" : "Video Seç"}
+                  </label>
+                </div>
+              ))}
             </div>
-          ) : (
-            <>
-              {media.image && (
-                <div className="mb-4 md:mb-6 relative">
-                  <img src={typeof media.image === "string" ? media.image : undefined} alt="Uploaded" className="w-full p-2 rounded-lg shadow-lg border border-gray-500" />
-                  {/* Delete Button for Image */}
-                  <button
-                    onClick={() => handleDeleteMedia("image")}
-                    className="absolute top-2 right-2 mt-2 mr-2 bg-red-500 text-white px-4 py-2 rounded-full hover:bg-red-600 transition-all"
-                  >
-                    <FaTrash size={16} />
-                  </button>
-                </div>
-              )}
-              {media.video && (
-                <div className="mb-4 md:mb-6 relative">
-                  <video controls className="w-full rounded-lg shadow-lg p-2 border border-gray-500">
-                    <source src={typeof media.video === "string" ? media.video : undefined} type="video/mp4" />
-                  </video>
-                  {/* Delete Button for Video */}
-                  <button
-                    onClick={() => handleDeleteMedia("video")}
-                    className="absolute top-2 right-2 mt-2 mr-2 bg-red-500 text-white px-4 py-2 rounded-full hover:bg-red-600 transition-all"
-                  >
-                    <FaTrash size={16} />
-                  </button>
-                </div>
-              )}
-            </>
-          )}
-  
-          {(media.image || media.video) && (
-            <button
-              onClick={handleCreateAnnouncement}
-              className="w-full text-white bg-emerald-600 py-2 md:py-3 mt-4 md:mt-6 rounded-md cursor-pointer transition-all hover:bg-emerald-800 flex items-center justify-center gap-3"
-            >
-              <FaCheckCircle size={20} /> Duyuruyu Oluştur
-            </button>
-          )}
+          </div>
+
+          <div className="w-full md:w-1/2 min-h-[300px] md:min-h-[500px] bg-gray-900 rounded-r-md shadow-md p-8 md:p-4 overflow-auto">
+            <h2 className="text-3xl mt-4 font-bold text-white mb-4 md:mb-4 text-center">Ön İzleme</h2>
+            {!media.image && !media.video ? (
+              <div className="flex items-center justify-center h-[200px] md:h-[400px]  border-2 border-dashed border-gray-500 rounded-md">
+                <p className="text-gray-400 text-lg">Ön izleme burada gözükecek</p>
+              </div>
+            ) : (
+              <>
+                {media.image && (
+                  <div className="mb-4 md:mb-6 relative">
+                    <img src={typeof media.image === "string" ? media.image : undefined} alt="Uploaded" className="w-full p-2 rounded-lg shadow-lg border border-gray-500" />
+                    {/* Delete Button for Image */}
+                    <button
+                      onClick={() => handleDeleteMedia("image")}
+                      className="absolute top-2 right-2 mt-2 mr-2 bg-red-500 text-white px-4 py-2 rounded-full hover:bg-red-600 transition-all"
+                    >
+                      <FaTrash size={16} />
+                    </button>
+                  </div>
+                )}
+                {media.video && (
+                  <div className="mb-4 md:mb-6 relative">
+                    <video controls className="w-full rounded-lg shadow-lg p-2 border border-gray-500">
+                      <source src={typeof media.video === "string" ? media.video : undefined} type="video/mp4" />
+                    </video>
+                    {/* Delete Button for Video */}
+                    <button
+                      onClick={() => handleDeleteMedia("video")}
+                      className="absolute top-2 right-2 mt-2 mr-2 bg-red-500 text-white px-4 py-2 rounded-full hover:bg-red-600 transition-all"
+                    >
+                      <FaTrash size={16} />
+                    </button>
+                  </div>
+                )}
+              </>
+            )}
+
+            {(media.image || media.video) && (
+              <button
+                onClick={handleCreateAnnouncement}
+                className="w-full text-white bg-emerald-600 py-2 md:py-3 mt-4 md:mt-6 rounded-md cursor-pointer transition-all hover:bg-emerald-800 flex items-center justify-center gap-3"
+              >
+                <FaCheckCircle size={20} /> Duyuruyu Oluştur
+              </button>
+            )}
+          </div>
         </div>
       </div>
     </div>
   );
-};  
+};
