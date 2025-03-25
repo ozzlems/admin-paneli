@@ -1,11 +1,12 @@
 'use client';
-import router from "next/router";
+import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { FaImage, FaVideo, FaTrash, FaCheckCircle, FaBell, FaUser, FaSignOutAlt } from "react-icons/fa";
 
 export default function MediaUpload() {
   const [media, setMedia] = useState<{ image: string | ArrayBuffer | null; video: string | ArrayBuffer | null }>({ image: null, video: null });
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter(); // Değişiklik burada
   
   const [fileInputKey, setFileInputKey] = useState<FileInputKeys>({ image: 0, video: 0 });
 
