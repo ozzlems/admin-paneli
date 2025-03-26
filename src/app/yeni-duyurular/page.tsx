@@ -1,99 +1,97 @@
 'use client';
 import { useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
-import { FaImage, FaVideo, FaTrash, FaCheckCircle, FaBell, FaUser, FaSignOutAlt } from "react-icons/fa";
+import { useState, useRef } from "react";
+import { FaArrowLeft, FaImage, FaVideo, FaTrash, FaPaperPlane, FaBell, FaUser, FaSignOutAlt } from "react-icons/fa";
 
-export default function MediaUpload() {
-  const [media, setMedia] = useState<{ image: string | ArrayBuffer | null; video: string | ArrayBuffer | null }>({ image: null, video: null });
+export default function NewAnnouncementPage() {
+  const router = useRouter();
+  const [media, setMedia] = useState<{
+    image: string | ArrayBuffer | null;
+    video: string | ArrayBuffer | null;
+  }>({ image: null, video: null });
   const [error, setError] = useState<string | null>(null);
-  const router = useRouter(); // Değişiklik burada
-  
-  const [fileInputKey, setFileInputKey] = useState<FileInputKeys>({ image: 0, video: 0 });
+  const imageInputRef = useRef<HTMLInputElement>(null);
+  const videoInputRef = useRef<HTMLInputElement>(null);
 
-  type FileInputKeys = {
-    image: number;
-    video: number;
-  };
-
-  useEffect(() => {
-    const savedAnnouncements = JSON.parse(localStorage.getItem("announcements") || "[]");
-    console.log("Eski duyurular yüklendi:", savedAnnouncements);
-  }, []);
-  const handleUpload = (event: React.ChangeEvent<HTMLInputElement>, type: string) => {
+  const handleUpload = (event: React.ChangeEvent<HTMLInputElement>, type: 'image' | 'video') => {
     const file = event.target.files?.[0];
     if (!file) return;
-  
+
+    // Dosya boyutu kontrolü (max 5MB)
+    if (file.size > 20 * 1024 * 1024) {
+      setError('Dosya boyutu 20 MB üzerinde olamaz');
+      return;
+    }
+
     const reader = new FileReader();
     reader.onloadend = () => {
-      if (type === "image") {
+      if (type === 'image') {
         const img = new Image();
-        if (typeof reader.result === "string") {
-          img.src = reader.result;
-        }
         img.onload = () => {
           const { naturalWidth: width, naturalHeight: height } = img;
           const aspectRatio = width / height;
-          const isValidSize = width >= 1280 && width <= 3840 && height >= 720 && height <= 2160;
-          if (Math.abs(aspectRatio - 16 / 9) < 0.1 && isValidSize) {
-            setMedia((prev) => ({ ...prev, image: reader.result }));
-            setError(null);
-          } else {
-            setError("Lütfen 16:9 en boy oranına sahip ve çözünürlüğü 1280x720 ile 3840x2160 arasında bir resim yükleyin.");
+          
+          // 16:9 en boy oranı ve çözünürlük kontrolü
+          if (Math.abs(aspectRatio - 16/9) > 0.1) {
+            setError('Lütfen 16:9 en boy oranına sahip bir resim yükleyin');
+            return;
           }
+          
+          setMedia(prev => ({ ...prev, image: reader.result }));
+          setError(null);
         };
-      } else if (type === "video") {
-        const video = document.createElement("video");
-        if (typeof reader.result === "string") {
-          video.src = reader.result;
-        }
+        img.src = URL.createObjectURL(file);
+      } else {
+        const video = document.createElement('video');
         video.onloadedmetadata = () => {
           const { videoWidth: width, videoHeight: height } = video;
-          if ((width === 1920 && height === 1080) || (width === 3840 && height === 2160)) {
-            setMedia((prev) => ({ ...prev, video: reader.result }));
-            setError(null);
-          } else {
-            setError("Lütfen 1920x1080 (1080p) veya 3840x2160 (4K) çözünürlükte bir video yükleyin.");
+          
+          // Sadece Full HD veya 4K videoları kabul et
+          if (!((width === 1920 && height === 1080) || (width === 3840 && height === 2160))) {
+            setError('Sadece 1080p veya 4K çözünürlükte video yükleyebilirsiniz');
+            return;
           }
+          
+          setMedia(prev => ({ ...prev, video: reader.result }));
+          setError(null);
         };
+        video.src = URL.createObjectURL(file);
       }
     };
     reader.readAsDataURL(file);
   };
 
-const handleDeleteMedia = (type: keyof FileInputKeys) => {  // Use keyof here
-  setMedia((prev) => ({
-    ...prev,
-    [type]: null,
-  }));
-  setFileInputKey(prev => ({ ...prev, [type]: prev[type] + 1 }));
-};
+  const handleDeleteMedia = (type: 'image' | 'video') => {
+    setMedia(prev => ({ ...prev, [type]: null }));
+    if (type === 'image' && imageInputRef.current) {
+      imageInputRef.current.value = '';
+    }
+    if (type === 'video' && videoInputRef.current) {
+      videoInputRef.current.value = '';
+    }
+  };
 
-  const handleCreateAnnouncement = () => {
-    if (!media.image && !media.video) return;
+  const handleSubmit = () => {
+    if (!media.image && !media.video) {
+      setError('Lütfen en az bir medya dosyası yükleyin');
+      return;
+    }
 
-    const newAnnouncement = {
-      id: Date.now(),
-      image: media.image,
-      video: media.video,
-      date: new Date().toLocaleString(),
-    };
-
-    const savedAnnouncements = JSON.parse(localStorage.getItem("announcements") || "[]");
-    const updatedAnnouncements = [newAnnouncement, ...savedAnnouncements];
-
-    localStorage.setItem("announcements", JSON.stringify(updatedAnnouncements));
-
-    console.log("Duyuru kaydedildi:", newAnnouncement);
-    alert("Duyuru başarıyla oluşturuldu!");
-
+    // Burada API çağrısı yapılabilir
+    console.log('Duyuru oluşturuldu:', media);
+    alert('Duyuru başarıyla oluşturuldu!');
+    
+    // Formu temizle
     setMedia({ image: null, video: null });
+    setError(null);
   };
 
   return (
-    <div className="flex min-h-screen">
-    {/* Sidebar */}
+    <div className="flex min-h-screen bg-gray-100">
+        {/* Sidebar */}
     <div className="w-64 bg-gray-900 text-white p-6 flex flex-col gap-6">
       <div className="flex items-left gap-2 mb-4 mt-2 mr-2 justify-center">
+        {/* Akdeniz İkonu */}
         <img src="/akdeniz.png" alt="Akdeniz Icon" className="w-10 h-10" />
         <h2 className="text-2xl font-bold text-left text-gray-100 mt-1.5">
           Admin Panel
@@ -114,106 +112,133 @@ const handleDeleteMedia = (type: keyof FileInputKeys) => {  // Use keyof here
         </li>
       </ul>
       <button
-        className="flex items-center gap-2 bg-red-600 p-2.5 rounded-lg hover:bg-red-700"
+        className="flex items-center gap-2 bg-red-600 p-2.5  rounded-lg hover:bg-red-700"
         onClick={() => router.push("/login")}
       >
         <FaSignOutAlt /> Çıkış Yap
       </button>
     </div>
-  
-    {/* Main Content */}
-    <div className="flex-1 bg-slate-200 p-6 pb-3">
-      <div className="w-full max-w-8xl px-4 mx-auto mt-8 md:mt-30">
-        <div className="flex flex-col md:flex-row gap-4 md:gap-6">
-          {/* Announcement Creation */}
-          <div className="w-full md:w-1/2 min-h-[300px] h-[500px] bg-gray-900 rounded-md shadow-md p-6 flex flex-col overflow-auto">
-            <h1 className="text-3xl font-bold text-white mb-6 text-center">Yeni Duyuru Oluştur</h1>
-            {error && (
-              <p className="flex w-full text-red-400 text-center mb-6">
-                {error}
-              </p>
-            )}
-            <div className="flex flex-col justify-center items-center flex-1 gap-6 w-full h-full border-2 border-dashed border-gray-500 rounded-md p-6">
-          
-{(["image", "video"] as const).map((type) => (  // Note the 'as const' here
-  <div key={type} className="w-full mb-4">
-    <label className="block text-lg font-semibold text-gray-200 mb-2 text-left">
-      {type === "image" ? "Resim Yükle" : "Video Yükle"}
-    </label>
-    <input
-      type="file"
-      accept={type === "image" ? "image/*" : "video/*"}
-      onChange={(e) => handleUpload(e, type)}
-      className="hidden"
-      id={`${type}-upload`}
-      key={`${type}-${fileInputKey[type]}`}
-    />
-    <label
-      htmlFor={`${type}-upload`}
-      className="w-full bg-blue-500 text-white px-6 py-3 rounded-md cursor-pointer hover:bg-blue-600 transition-all flex items-center justify-center gap-3"
-    >
-      {type === "image" ? <FaImage size={20} /> : <FaVideo size={20} />}
-      {type === "image" ? "Resim Seç" : "Video Seç"}
-    </label>
-  </div>
-))}
-            </div>
-          </div>
-  
-         {/* Preview */}
-<div className="w-full md:w-1/2 min-h-[300px] h-[500px] bg-gray-900 rounded-md shadow-md p-6 overflow-auto">
-  <h2 className="text-3xl font-bold text-white mb-6 text-center">Ön İzleme</h2>
-  {!media.image && !media.video ? (
-    <div className="flex items-center justify-center h-[380px] border-2 border-dashed border-gray-500 rounded-md">
-      <p className="text-gray-400 text-lg">Ön izleme burada gözükecek</p>
-    </div>
-  ) : (
-    <>
-      {media.image && (
-        <div className="mb-4 relative h-[360px] overflow-hidden rounded-lg border border-gray-500">
-          <img 
-            src={typeof media.image === "string" ? media.image : undefined} 
-            alt="Uploaded" 
-            className="w-full h-full object-cover p-2"
-          />
-          <button
-            onClick={() => handleDeleteMedia("image")}
-            className="absolute top-2 right-2 bg-red-500 text-white px-3 py-1 rounded-full hover:bg-red-600 transition-all"
-          >
-            <FaTrash size={16} />
-          </button>
-        </div>
-      )}
-      {media.video && (
-        <div className="mb-4 relative h-[360px]">
-          <video 
-            controls 
-            className="w-full h-full object-cover p-2 rounded-lg shadow-lg border border-gray-500"
-          >
-            <source src={typeof media.video === "string" ? media.video : undefined} type="video/mp4" />
-          </video>
-          <button
-            onClick={() => handleDeleteMedia("video")}
-            className="absolute top-2 right-2 bg-red-500 text-white px-3 py-1 rounded-full hover:bg-red-600 transition-all"
-          >
-            <FaTrash size={16} />
-          </button>
-        </div>
-      )}
-    </>
-  )}
 
-  
-            {(media.image || media.video) && (
-              <button
-                onClick={handleCreateAnnouncement}
-                className="w-full text-white bg-emerald-600 py-3 mt-6 rounded-md cursor-pointer transition-all hover:bg-emerald-800 flex items-center justify-center gap-3"
-              >
-                <FaCheckCircle size={20} /> Duyuruyu Oluştur
-              </button>
+      {/* Main Content */}
+      <div className="flex-1 bg-slate-200">
+        {/* Header */}
+        <header className="bg-white shadow-sm">
+          <div className="max-w-7xl  mx-auto px-4 py-4 sm:px-6 lg:px-8 flex items-center">
+            <button 
+              onClick={() => router.back()}
+              className="mr-4 p-2 rounded-full hover:bg-gray-200 transition-colors"
+            >
+              <FaArrowLeft className="text-gray-600 text-lg" />
+            </button>
+            <h1 className="text-2xl font-bold text-gray-800/90">Yeni Duyuru Oluştur</h1>
+          </div>
+        </header>
+
+        {/* Upload Section */}
+        <main className="max-w-6xl  mx-auto px-4 py-6 sm:px-6 lg:px-8">
+          <div className="bg-slate-50 rounded-lg shadow-md p-6 mb-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Image Upload */}
+              <div className="border-2 border-dashed border-gray-400/80 rounded-lg p-6 text-center">
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => handleUpload(e, 'image')}
+                  className="hidden"
+                  id="image-upload"
+                  ref={imageInputRef}
+                />
+                <label
+                  htmlFor="image-upload"
+                  className="flex flex-col items-center justify-center cursor-pointer"
+                >
+                  <FaImage className="text-blue-500 text-4xl mb-3" />
+                  <span className="text-lg font-medium text-gray-700">Resim Yükle</span>
+                  <p className="text-sm text-gray-500 mt-1">PNG, JPG (16:9 oran)</p>
+                </label>
+              </div>
+
+              {/* Video Upload */}
+              <div className="border-2 border-dashed border-gray-400/80 rounded-lg p-6 text-center">
+                <input
+                  type="file"
+                  accept="video/*"
+                  onChange={(e) => handleUpload(e, 'video')}
+                  className="hidden"
+                  id="video-upload"
+                  ref={videoInputRef}
+                />
+                <label
+                  htmlFor="video-upload"
+                  className="flex flex-col items-center justify-center cursor-pointer"
+                >
+                  <FaVideo className="text-blue-500 text-4xl mb-3" />
+                  <span className="text-lg font-medium text-gray-700">Video Yükle</span>
+                  <p className="text-sm text-gray-500 mt-1">MP4 (1080p veya 4K)</p>
+                </label>
+              </div>
+            </div>
+
+            {error && (
+              <div className="mt-4 p-3 bg-red-50 rounded-md">
+                <p className="text-red-600 text-center">{error}</p>
+              </div>
             )}
           </div>
-        </div>
+
+          {/* Preview Section - Buton sadece burada gözükecek */}
+          {(media.image || media.video) && (
+            <div className="bg-slate-50 rounded-lg shadow-md p-6">
+              <h2 className="text-xl font-semibold text-gray-700 mb-4 ml-8">Ön İzleme</h2>
+              
+              <div className="space-y-2">
+                {media.image && (
+                  <div className="relative">
+                    <img 
+                      src={media.image as string} 
+                      alt="Yüklenen resim" 
+                      className="w-full h-auto max-h-[360px] object-contain rounded-md shadow-sm border-2 border-gray-300/90"
+                    />
+                    <button
+                      onClick={() => handleDeleteMedia('image')}
+                      className="absolute top-2 right-4 bg-red-500 text-white p-3 rounded-full hover:bg-red-600 transition-colors"
+                    >
+                      <FaTrash />
+                    </button>
+                  </div>
+                )}
+
+                {media.video && (
+                  <div className="relative">
+                    <video 
+                      controls 
+                      className="w-full max-h-[360px] rounded-md shadow-sm border-2 border-gray-300/90"
+                    >
+                      <source src={media.video as string} type="video/mp4" />
+                    </video>
+                    <button
+                      onClick={() => handleDeleteMedia('video')}
+                      className="absolute top-2 right-4 bg-red-500 text-white p-3 rounded-full hover:bg-red-600 transition-colors"
+                    >
+                      <FaTrash />
+                    </button>
+                  </div>
+                )}
+
+                {/* Duyuru Oluştur Butonu SADECE burada */}
+                <div className="flex  justify-center pt-3">
+                  <button
+                    onClick={handleSubmit}
+                    className="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-800 rounded-md text-white font-medium flex items-center gap-2 transition-colors"
+                  >
+                    <FaPaperPlane /> Duyuruyu Oluştur
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+        </main>
       </div>
     </div>
-  </div> );};
+  );
+}

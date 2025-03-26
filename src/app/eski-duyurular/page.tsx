@@ -60,7 +60,7 @@ const EskiDuyurular = () => {
         </li>
       </ul>
       <button
-        className="flex items-center gap-2 bg-red-600 p-2.5 rounded-lg hover:bg-red-700"
+        className="flex items-center gap-2 bg-red-600 p-2.5  rounded-lg hover:bg-red-700"
         onClick={() => router.push("/login")}
       >
         <FaSignOutAlt /> Çıkış Yap
