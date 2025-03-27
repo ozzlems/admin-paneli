@@ -62,7 +62,7 @@ const Login = () => {
 
   return (
     <div className="select-none flex items-center justify-center h-screen bg-gradient-to-bl from-blue-200 from-10% via-slate-300 to-slate-300 ">
-      <div className="w-[100%] max-w-3xl lg:max-w-3xl p-10 bg-gray-900 flex-col flex items-center gap-4 rounded-md  shadow-lg">
+      <div className="w-[100%] max-w-2xl lg:max-w-2xl p-12 pb-14 bg-gray-900 flex-col flex items-center gap-4 rounded-md shadow-md">
         {/* Logo */}
         <img src="\akdeniz.png" alt="logo" className="w-30 md:w-30" />
 
