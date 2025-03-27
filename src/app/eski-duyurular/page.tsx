@@ -2,14 +2,15 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { AiOutlinePlus } from "react-icons/ai";
-import { FaBell, FaSignOutAlt, FaUser, FaArrowLeft, FaTimes, FaBars } from "react-icons/fa";
+import { FaBell, FaSignOutAlt, FaUser, FaTimes, FaBars, FaVideo, FaImage, FaTrash } from "react-icons/fa";
 
 const initialVideos = [
   { id: 1, url: "https://cdn.pixabay.com/video/2017/09/20/12127-235051444_large.mp4" },
   { id: 2, url: "https://samplelib.com/lib/preview/mp4/sample-10s.mp4" },
   { id: 3, url: "https://videos.pexels.com/video-files/854417/854417-uhd_2560_1440_25fps.mp4" },
-];
+  { id: 4, url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" },
 
+];
 const initialImages = [
   { id: 1, url: "https://wallpapers.com/images/hd/yellow-house-and-greenery-best-hd-h5hf3cmcwkls52wo.jpg" },
   { id: 2, url: "https://wallpapersok.com/images/hd/contrasting-scenic-views-a5u9zq0a0ymy2dug.jpg" },
@@ -105,121 +106,159 @@ const EskiDuyurular = () => {
           </div>
         </header>
 
-        {/* Video Section */}
-        <div className="max-w-6xl mx-auto p-4 sm:p-6 pt-6 sm:pt-12">
-          <div className="bg-gray-800 rounded-lg shadow-lg p-4 sm:p-6 mb-6 sm:mb-8">
-            <h2 className="text-xl sm:text-2xl font-bold mb-4 text-white">Videolar</h2>
-            <div className="flex flex-col lg:flex-row gap-4 sm:gap-8">
-              <div className="w-full lg:flex-1 flex items-center justify-center border border-gray-600 rounded-lg min-h-[180px] sm:min-h-[240px] bg-gray-800">
-                {selectedVideo ? (
-                  <video 
-                    key={selectedVideo} 
-                    controls 
-                    className="w-full h-full object-contain rounded-lg shadow-lg"
+       {/* Video Section - Yenilenmiş Tasarım */}
+<div className="max-w-6xl mx-auto  sm:p-6  sm:pt-12">
+  <div className="bg-white rounded-xl shadow-xl p-6 mb-4 border border-gray-200">
+    <h2 className="text-2xl font-semibold mb-6 text-gray-700 flex items-center gap-2.5">
+      <FaVideo className="text-blue-500" /> Video Duyurular
+    </h2>
+    
+    <div className="flex flex-col xl:flex-row gap-6">
+      {/* Video Preview */}
+      <div className="xl:w-1/2">
+        <div className="bg-gray-50 rounded-lg border border-gray-300 overflow-hidden">
+          {selectedVideo ? (
+           <div className="relative pt-[56.25%]"> {/* 16:9 aspect ratio */}
+           <video 
+             key={selectedVideo} // Bu satırı ekledik
+             controls 
+             className="absolute top-0 left-0 w-full h-full object-contain"
+           >
+             <source src={selectedVideo} type="video/mp4" />
+             Tarayıcınız video oynatmayı desteklemiyor.
+           </video>
+         </div>
+          ) : (
+            <div className="flex flex-col items-center justify-center p-8 h-52 text-gray-500">
+              <FaVideo className="text-4xl mb-3" />
+              <p>Video seçiniz</p>
+            </div>
+          )}
+        </div>
+      </div>
+      
+      {/* Video List */}
+      <div className="xl:w-1/2">
+        <div className="bg-gray-50 rounded-lg border border-gray-300 overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-300">
+              <thead className="bg-gray-100">
+                <tr>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">ID</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Video URL</th>
+                  <th className="px-4 py-3 text-right text-xs font-medium text-gray-700 uppercase tracking-wider">İşlem</th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {videos.map((video) => (
+                  <tr 
+                    key={video.id} 
+                    className={`hover:bg-blue-50 cursor-pointer ${selectedVideo === video.url ? 'bg-blue-100' : ''}`}
+                    onClick={() => setSelectedVideo(video.url)}
                   >
-                    <source src={selectedVideo} type="video/mp4" />
-                    Tarayıcınız video oynatmayı desteklemiyor.
-                  </video>
-                ) : (
-                  <p className="text-gray-400 text-sm sm:text-base">Video önizleme burada görünecek</p>
-                )}
-              </div>
-              <div className="w-full lg:flex-1 overflow-x-auto">
-                <table className="w-full table-fixed min-h-[150px]">
-                  <thead>
-                    <tr className="text-left text-gray-400">
-                      <th className="p-2 w-1/6 text-sm sm:text-base">ID</th>
-                      <th className="p-2 w-3/6 text-center text-sm sm:text-base">URL</th>
-                      <th className="p-2 w-1/6 text-center text-sm sm:text-base">İşlem</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {videos.map((video) => (
-                      <tr
-                        key={video.id}
-                        className={`cursor-pointer hover:bg-gray-700 ${selectedVideo === video.url ? "border-2 border-blue-500" : ""}`}
-                        onClick={() => setSelectedVideo(video.url)}
+                    <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900">{video.id}</td>
+                    <td className="px-4 py-3 text-sm text-blue-600 hover:text-blue-800 break-all">
+                      <a href={video.url} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()}>
+                        {video.url.substring(0, 40)}...
+                      </a>
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap text-right text-sm">
+                      <button
+                        className="text-red-600 hover:text-red-900 p-1 rounded-full hover:bg-red-100 transition-colors"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDeleteVideo(video.id);
+                        }}
                       >
-                        <td className="p-2 text-white text-sm sm:text-base">{video.id}</td>
-                        <td className="p-2 text-blue-400 underline break-all text-xs sm:text-sm">
-                          {video.url}
-                        </td>
-                        <td className="p-2 text-center">
-                          <button
-                            className="bg-red-500 text-white px-3 sm:px-6 py-1 text-sm sm:text-base rounded-md hover:bg-red-700 transition duration-300"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleDeleteVideo(video.id);
-                            }}
-                          >
-                            Sil
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-
-          {/* Image Section */}
-          <div className="bg-gray-800 rounded-lg shadow-lg p-4 sm:p-6">
-            <h2 className="text-xl sm:text-2xl font-bold mb-4 text-white">Resimler</h2>
-            <div className="flex flex-col lg:flex-row gap-4 sm:gap-8">
-              <div className="w-full lg:flex-1 flex items-center justify-center border border-gray-600 rounded-lg h-[180px] sm:h-[250px] w-full overflow-hidden bg-gray-800">
-                {selectedImage ? (
-                  <img
-                    src={selectedImage}
-                    alt="Selected"
-                    className="h-full w-full object-cover rounded-lg shadow-lg"
-                  />
-                ) : (
-                  <p className="text-gray-400 text-sm sm:text-base">Resim önizleme burada görünecek</p>
-                )}
-              </div>
-              <div className="w-full lg:flex-1 overflow-x-auto">
-                <table className="w-full table-fixed min-h-[120px]">
-                  <thead>
-                    <tr className="text-left text-gray-400">
-                      <th className="p-2 w-1/6 text-sm sm:text-base">ID</th>
-                      <th className="p-2 w-3/6 text-center text-sm sm:text-base">URL</th>
-                      <th className="p-2 w-1/6 text-center text-sm sm:text-base">İşlem</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {images.map((image) => (
-                      <tr
-                        key={image.id}
-                        className={`cursor-pointer hover:bg-gray-700 ${selectedImage === image.url ? "border-2 border-blue-500" : ""}`}
-                        onClick={() => setSelectedImage(image.url)}
-                      >
-                        <td className="p-2 text-white text-sm sm:text-base">{image.id}</td>
-                        <td className="p-2 text-blue-400 underline break-all text-xs sm:text-sm">
-                          {image.url}
-                        </td>
-                        <td className="p-2 text-center">
-                          <button
-                            className="bg-red-500 text-white px-3 sm:px-6 py-1 text-sm sm:text-base rounded-md hover:bg-red-700 transition duration-300"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleDeleteImage(image.id);
-                            }}
-                          >
-                            Sil
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
+                        <FaTrash />
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
     </div>
-  );
-};
+  </div>
 
+  {/* Image Section - Yenilenmiş Tasarım */}
+  <div className="bg-white rounded-xl shadow-xl p-6 border border-gray-200">
+    <h2 className="text-2xl font-semibold mb-4 text-gray-700 flex items-center gap-2.5">
+      <FaImage className="text-green-600" /> Resim Duyurular
+    </h2>
+    
+    <div className="flex flex-col xl:flex-row gap-6">
+      {/* Image Preview */}
+      <div className="xl:w-1/2">
+        <div className="bg-gray-50 rounded-lg py-4 border border-gray-300 overflow-hidden">
+          {selectedImage ? (
+           <div className="relative pt-[50%]  "> {/* 4:3 aspect ratio */}
+           <img
+             key={selectedImage} // Bu satırı ekledik
+             src={selectedImage}
+             alt="Selected"
+             className="absolute top-0 left-0 w-full h-full object-contain "
+           />
+         </div>
+          ) : (
+            <div className="flex flex-col items-center justify-center p-8 h-52 text-gray-500">
+              <FaImage className="text-4xl mb-3" />
+              <p>Resim seçiniz</p>
+            </div>
+          )}
+        </div>
+      </div>
+      
+      {/* Image List */}
+      <div className="xl:w-1/2">
+        <div className="bg-gray-50 rounded-lg border border-gray-300 overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-300">
+              <thead className="bg-gray-100">
+                <tr>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">ID</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Resim URL</th>
+                  <th className="px-4 py-3 text-right text-xs font-medium text-gray-700 uppercase tracking-wider">İşlem</th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {images.map((image) => (
+                  <tr 
+                    key={image.id} 
+                    className={`hover:bg-green-50 cursor-pointer ${selectedImage === image.url ? 'bg-green-100' : ''}`}
+                    onClick={() => setSelectedImage(image.url)}
+                  >
+                    <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900">{image.id}</td>
+                    <td className="px-4 py-3 text-sm text-blue-600 hover:text-blue-800 break-all">
+                      <a href={image.url} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()}>
+                        {image.url.substring(0, 40)}...
+                      </a>
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap text-right text-sm">
+                      <button
+                        className="text-red-600 hover:text-red-900 p-1 rounded-full hover:bg-red-100 transition-colors"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDeleteImage(image.id);
+                        }}
+                      >
+                        <FaTrash />
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      </div>
+    </div>
+  );
+}
 export default EskiDuyurular;
