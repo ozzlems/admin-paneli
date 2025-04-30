@@ -106,7 +106,7 @@ const EskiDuyurular = () => {
           </div>
         </header>
 
-       {/* Video Section - Yenilenmiş Tasarım */}
+       {/* Video Secrtion */}
 <div className="max-w-6xl mx-auto  sm:p-6  sm:pt-12">
   <div className="bg-white rounded-xl shadow-xl p-6 mb-4 border border-gray-200">
     <h2 className="text-2xl font-semibold mb-6 text-gray-700 flex items-center gap-2.5">
@@ -183,7 +183,7 @@ const EskiDuyurular = () => {
     </div>
   </div>
 
-  {/* Image Section - Yenilenmiş Tasarım */}
+  {/* Image Section  */}
   <div className="bg-white rounded-xl shadow-xl p-6 border border-gray-200">
     <h2 className="text-2xl font-semibold mb-4 text-gray-700 flex items-center gap-2.5">
       <FaImage className="text-green-600" /> Resim Duyurular
